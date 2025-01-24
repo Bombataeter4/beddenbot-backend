@@ -24,7 +24,7 @@ def chat():
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Je bent een deskundige in bedden en matrassen. Geef advies in het Nederlands."},
+                {"role": "system", "content": "Je bent een deskundige in bedden en matrassen. Geef kort advies in het Nederlands."},
                 {"role": "user", "content": user_input}
             ],
             max_tokens=150,
