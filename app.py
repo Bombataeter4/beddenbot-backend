@@ -5,19 +5,20 @@ import openai
 import os
 
 app = Flask(__name__)
-CORS(app)  # CORS inschakelen voor alle routes
+CORS(app)
 
 # OpenAI API-key configureren
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Zorg dat deze environment variable is ingesteld
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    user_input = request.json.get("message", "")
-    
     try:
+        user_input = request.json.get("message", "")
+        print(f"Ontvangen bericht: {user_input}")  # Log het bericht
+
         # OpenAI API-aanroep
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Gebruik GPT-3.5 Turbo model
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Je bent een deskundige in bedden en matrassen. Geef advies in het Nederlands."},
                 {"role": "user", "content": user_input}
@@ -25,11 +26,17 @@ def chat():
             max_tokens=150,
             temperature=0.7
         )
-        # Haal het antwoord uit de API-respons
         answer = response["choices"][0]["message"]["content"]
+        print(f"Gegenereerd antwoord: {answer}")  # Log het antwoord
         return jsonify({"response": answer})
+
     except Exception as e:
-        return jsonify({"error": "Er is een fout opgetreden. Probeer het later opnieuw."}), 500
+        print(f"Fout opgetreden: {str(e)}")  # Log de foutmelding
+        return jsonify({"error": "Er is een fout opgetreden. Controleer de logs."}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
