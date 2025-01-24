@@ -1,15 +1,14 @@
 
 from flask import Flask, request, jsonify
-import requests
-import os
-from flask import Flask, request, jsonify
+from flask_cors import CORS
 import openai
 import os
 
 app = Flask(__name__)
+CORS(app)  # CORS inschakelen voor alle routes
 
 # OpenAI API-key configureren
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Zet je OpenAI API-key als environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")  # Zorg dat deze environment variable is ingesteld
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -30,8 +29,9 @@ def chat():
         answer = response["choices"][0]["message"]["content"]
         return jsonify({"response": answer})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Er is een fout opgetreden. Probeer het later opnieuw."}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 
