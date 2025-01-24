@@ -10,11 +10,15 @@ CORS(app)
 # OpenAI API-key configureren
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "BeddenBot backend is actief. Gebruik POST /chat voor interactie."})
+
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
         user_input = request.json.get("message", "")
-        print(f"Ontvangen bericht: {user_input}")  # Log het bericht
+        print(f"Ontvangen bericht: {user_input}")  # Debug-log
 
         # OpenAI API-aanroep
         response = openai.ChatCompletion.create(
@@ -27,11 +31,11 @@ def chat():
             temperature=0.7
         )
         answer = response["choices"][0]["message"]["content"]
-        print(f"Gegenereerd antwoord: {answer}")  # Log het antwoord
+        print(f"Gegenereerd antwoord: {answer}")  # Debug-log
         return jsonify({"response": answer})
 
     except Exception as e:
-        print(f"Fout opgetreden: {str(e)}")  # Log de foutmelding
+        print(f"Fout opgetreden: {str(e)}")  # Debug-log
         return jsonify({"error": "Er is een fout opgetreden. Controleer de logs."}), 500
 
 if __name__ == "__main__":
